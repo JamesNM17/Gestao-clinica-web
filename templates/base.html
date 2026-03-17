@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Painel{% endblock %}</title>
+
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Cuidar E Conectar</h2>
+
+    {% set func = (current_user.funcao or "").strip().lower() %}
+
+    <!-- Administrador -->
+    {% if func == "administrador" %}
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard Admin</a>
+        <a href="{{ url_for('funcionarios_list') }}">Funcionários</a>
+        <a href="{{ url_for('recepcao_list') }}">Dashboard Recepção</a>
+        <a href="{{ url_for('triagem') }}">Dashboard Triagem</a>
+        <a href="{{ url_for('dash_pacientes') }}">Pacientes</a>
+        <a href="{{ url_for('dashboard_medico') }}">Dashboard Médico</a>
+        <a href="{{ url_for('guia') }}">Orientações</a>
+        <a href="{{ url_for('painel_senha') }}">Painel de Chamada de Senha</a>
+    {% endif %}
+
+    <!-- Recepcionista -->
+    {% if func == "recepcionista" %}
+        <a href="{{ url_for('recepcao_list') }}">Dashboard Recepção</a>
+        <a href="{{ url_for('dash_pacientes') }}">Pacientes</a>
+        <a href="{{ url_for('guia') }}">Orientações</a>
+    {% endif %}
+
+    <!-- Enfermeiro -->
+    {% if func == "enfermeiro" %}
+        <a href="{{ url_for('triagem') }}">Dashboard Triagem</a>
+        <a href="{{ url_for('dash_pacientes') }}">Pacientes</a>
+        <a href="{{ url_for('guia') }}">Orientações</a>
+    {% endif %}
+
+    <!-- Médico -->
+    {% if func == "medico" %}
+        <a href="{{ url_for('dashboard_medico') }}">Dashboard Médico</a>
+        <a href="{{ url_for('dash_pacientes') }}">Pacientes</a>
+        <a href="{{ url_for('guia') }}">Orientações</a>
+    {% endif %}
+
+    <a href="{{ url_for('sair') }}">Sair</a>
+    <button class="btn" onclick="toggleTheme()">Alternar Tema</button>
+
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</div>
+
+<div class="content">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

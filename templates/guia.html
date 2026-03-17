@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Funções dos Funcionários{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">Guia de Funções</h1>
+
+<div class="card" style="margin-bottom: 20px;">
+    <h2>Recepção</h2>
+    <p>
+        A recepção é responsável pelo <strong>primeiro contato com o paciente</strong>.  
+        Tarefas principais:
+    </p>
+    <ul>
+        <li>Registrar a chegada dos pacientes</li>
+        <li>Realizar cadastro e atualização de dados basicos</li>
+        <li>Orientar os pacientes</li>
+        <li>Encaminhar para a triagem</li>
+    </ul>
+</div>
+
+<div class="card" style="margin-bottom: 20px;">
+    <h2>Triagem</h2>
+    <p>
+        A triagem avalia o estado inicial do paciente e define prioridades.  
+        Funções:
+    </p>
+    <ul>
+        <li>Coletar sinais vitais (Frequência cardiaca, Frequência respiratoria, Temperatura etc.)</li>
+        <li>Identificar situações de urgência</li>
+        <li>Preencher observações no sistema</li>
+        <li>Encaminhar para atendimento médico</li>
+    </ul>
+</div>
+
+<div class="card" style="margin-bottom: 20px;">
+    <h2>Atendimento Médico</h2>
+    <p>
+        Responsável pelo diagnóstico e condução clínica do paciente.  
+        Atividades:
+    </p>
+    <ul>
+        <li>Avaliar queixas e histórico</li>
+        <li>Realizar exame clínico</li>
+        <li>Registrar Diagnóstico</li>
+        <li>Prescrever medicamentos, exames ou encaminhamentos</li>
+    </ul>
+</div>
+
+<div class="card" style="margin-bottom: 20px;">
+    <h2>Administração</h2>
+    <p>
+        A administração gerencia todo o sistema e seus usuários.  
+        Funções:
+    </p>
+    <ul>
+        <li>Gerenciar funcionários e permissões</li>
+        <li>Acompanhar dashboards e relatórios</li>
+        <li>Supervisionar operação de recepção, triagem e atendimento</li>
+        <li>Realizar manutenção geral dos dados</li>
+    </ul>
+</div>
+
+{% endblock %}

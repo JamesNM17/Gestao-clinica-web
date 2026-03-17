@@ -1,0 +1,184 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #e6ecff, #f5f7ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 1100px;
+  padding: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20px;
+  display: flex;
+  overflow: hidden;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.1);
+}
+
+.login-box {
+  width: 45%;
+  padding: 60px 50px;
+}
+
+.login-box h2 {
+  font-size: 28px;
+  color: #2c2c54;
+  margin-bottom: 10px;
+}
+
+.login-box p {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 35px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  outline: none;
+  font-size: 14px;
+}
+
+.input-group input:focus {
+  border-color: #4c6ef5;
+}
+
+.forgot {
+  display: block;
+  text-align: right;
+  margin-bottom: 25px;
+  font-size: 13px;
+  color: #4c6ef5;
+  text-decoration: none;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #4c6ef5, #6f8cff);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(76,110,245,0.4);
+}
+
+.image-box {
+  width: 55%;
+  height: 55%;
+  background: linear-gradient(135deg, #eef3ff, #dde6ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-box img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 900px) {
+  .card {
+    flex-direction: column;
+  }
+
+  .login-box, .image-box {
+    width: 100%;
+  }
+
+  .image-box {
+    padding: 30px 0;
+  }
+}
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  outline: none;
+  font-size: 14px;
+}
+
+.input-field:focus {
+  border-color: #4c6ef5;
+}
+
+.password-group {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 16px;
+  color: #777;
+  transition: 0.2s;
+}
+
+.toggle-password:hover {
+  color: #4c6ef5;
+}
+
+.password-group {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #777;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-password svg {
+  width: 20px;
+  height: 20px;
+  transition: 0.2s;
+}
+
+.toggle-password:hover {
+  color: #4c6ef5;
+}
+
+/* Esconde olho fechado inicialmente */
+#eye-closed {
+  display: none;
+}

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Atendimento Médico{% endblock %}
+
+{% block content %}
+
+<h1 class="titulo">{{ action }} Atendimento</h1>
+
+<!-- Card com informações do paciente -->
+<div class="card" style="margin-bottom: 20px; padding: 15px;">
+    <h2>Informações do Paciente</h2>
+
+    <p><strong>Nome:</strong> {{ paciente.nome_completo }}</p>
+    <p><strong>Data de Nascimento:</strong> {{ paciente.data_nascimento or 'Não informado' }}</p>
+    <p><strong>Sexo:</strong> {{ paciente.sexo or 'Não informado' }}</p>
+    <p><strong>Contato:</strong> {{ paciente.contato or 'Não informado' }}</p>
+    <p><strong>Documento (CPF):</strong> {{ paciente.cpf or 'Não informado' }}</p>
+    <p><strong>Plano:</strong> {{ paciente.plano or 'Não informado' }}</p>
+    <p><strong>Tipo de Atendimento:</strong> {{ paciente.atendimento or 'Não informado' }}</p>
+    <p><strong>Horário de Chegada:</strong> 
+        {% if paciente.horario_chegada %}{{ paciente.horario_chegada.strftime('%d/%m/%Y %H:%M') }}{% else %}Não informado{% endif %}
+    </p>
+    <p><strong>Observações Recepção:</strong> {{ paciente.observacoes_recepcao or 'Não informado' }}</p>
+    <p><strong>Urgência Recepção:</strong> {{ paciente.urgencia_recepcao or 'Não informado' }}</p>
+    <p><strong>Responsável Recepção:</strong> {{ paciente.responsavel_recepcao or 'Não informado' }}</p>
+
+    {% if paciente.triagem %}
+    <hr>
+    <h3>Triagem</h3>
+    {% for label, valor in [
+        ("Ocupação", paciente.triagem.ocupacao),
+        ("Temperatura", paciente.triagem.temperatura),
+        ("Frequência Cardíaca", paciente.triagem.freq_cardiaca),
+        ("Frequência Respiratória", paciente.triagem.freq_respiratoria),
+        ("Peso", paciente.triagem.peso),
+        ("Altura", paciente.triagem.altura),
+        ("Queixa Principal", paciente.triagem.queixa_principal),
+        ("Doenças Pré-existentes", paciente.triagem.doencas_pre_existentes),
+        ("Urgência Triagem", paciente.triagem.urgencia_triagem),
+        ("Responsável Triagem", paciente.triagem.responsavel_triagem),
+        ("Observações Triagem", paciente.triagem.observacoes_triagem),
+        ("Pressão Arterial", paciente.triagem.pressao_arterial),
+        ("Saturação", paciente.triagem.saturacao),
+        ("Alergia", paciente.triagem.alergia),
+        ("Tabagista", 'Sim' if paciente.triagem.tabagista else 'Não'),
+        ("Bebida Alcoólica", 'Sim' if paciente.triagem.bebida_alcoolica else 'Não'),
+        ("Cirurgia Realizada", paciente.triagem.cirugia_realizada),
+        ("Escala de Dor", paciente.triagem.escala_de_dor),
+        ("Toma Medicação", paciente.triagem.toma_medicacao),
+        ("Finalizado Triagem", 'Sim' if paciente.triagem.finalizado_triagem else 'Não')
+    ] %}
+        <p><strong>{{ label }}:</strong> {{ valor or 'Não informado' }}</p>
+    {% endfor %}
+    <p><strong>Horário da Triagem:</strong> 
+        {% if paciente.triagem.horario_de_triagem %}{{ paciente.triagem.horario_de_triagem.strftime('%d/%m/%Y %H:%M') }}{% else %}Não informado{% endif %}
+    </p>
+    {% endif %}
+
+    {% if paciente.medico %}
+    <hr>
+    <h3>Atendimento Médico</h3>
+    {% for label, valor in [
+        ("Diagnóstico", paciente.medico.diagnostico),
+        ("Prescrição", paciente.medico.prescricao),
+        ("Feedback", paciente.medico.feedback),
+        ("Observações Médico", paciente.medico.observacoes_medico),
+        ("Finalizado Médico", 'Sim' if paciente.medico.finalizado_medico else 'Não'),
+        ("Responsável Médico", paciente.medico.responsavel_medico)
+    ] %}
+        <p><strong>{{ label }}:</strong> {{ valor or 'Não informado' }}</p>
+    {% endfor %}
+    <p><strong>Horário de Finalização:</strong> 
+        {% if paciente.medico.horario_de_finalizacao %}{{ paciente.medico.horario_de_finalizacao.strftime('%d/%m/%Y %H:%M') }}{% else %}Não informado{% endif %}
+    </p>
+    {% endif %}
+</div>
+
+<!-- Card do formulário -->
+<div class="card">
+    <form method="POST" class="form-custom">
+        {{ form.hidden_tag() }}
+
+<div class="form-group">
+    <label>Paciente</label>
+    <select name="{{ form.recepcao_id.name }}" class="input-custom">
+        {% for id, nome in form.recepcao_id.choices %}
+            <option value="{{ id }}" {% if id == recepcao_id %}selected{% endif %}>
+                {{ nome }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+        {% for field in [form.diagnostico, form.prescricao, form.feedback, form.observacoes_medico] %}
+            <div class="form-group">
+                {{ field.label }}
+                {{ field(class="textarea-custom") }}
+            </div>
+        {% endfor %}
+
+        <input type="hidden" name="finalizado_medico" value="True">
+
+        <div class="form-group" style="text-align: right;">
+            <button type="submit" class="btn btn-success">Finalizar Atendimento</button>
+        </div>
+    </form>
+
+    <!-- Botão chamar paciente -->
+    <div class="form-group" style="text-align: right; margin-top: 10px;">
+        <form method="post" action="{{ url_for('chamar_paciente', paciente_id=paciente.id, destino='Medico') }}">
+            <button type="submit" class="btn btn-warning">Chamar Paciente</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

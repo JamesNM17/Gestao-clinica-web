@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Administração{% endblock %}
+
+{% block content %}
+
+<h1>Painel Administrativo</h1>
+
+<div class="cards">
+    <div class="card" onclick="window.location.href='{{ url_for('funcionarios_list') }}'">
+        <h3>Funcionários</h3>
+        <p>Total: {{ dados|length }}</p>
+    </div>
+
+    <div class="card" onclick="window.location.href='{{ url_for('recepcao_list') }}'">
+        <h3>Recepção</h3>
+        <p>Pacientes em atendimento</p>
+    </div>
+
+    <div class="card" onclick="window.location.href='{{ url_for('triagem') }}'">
+        <h3>Triagem</h3>
+        <p>Registros recentes</p>
+    </div>
+</div>
+
+<!-- GRÁFICO EXEMPLO -->
+<canvas id="grafico1" width="400" height="150"></canvas>
+
+<script>
+    const ctx = document.getElementById('grafico1');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Funcionários', 'Recepção', 'Triagem'],
+            datasets: [{
+                label: 'Quantidade',
+                data: [
+                    {{ dados|length }},
+                    5,
+                    8
+                ]
+            }]
+        }
+    });
+</script>
+
+{% endblock %}

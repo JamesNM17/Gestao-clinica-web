@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Painel de Pacientes{% endblock %}
+
+{% block content %}
+
+<h2>Lista de Pacientes</h2>
+
+<div class="cards">
+
+    {% for paciente in dados %}
+
+        <div class="card"
+             onclick="mostrarModal(this)"
+             data-nome="{{ (paciente.nome_completo or 'Não informado') | e }}"
+             data-id="{{ paciente.id }}"
+             data-nascimento="{{ (paciente.data_nascimento or 'Não informado') | e }}"
+             data-sexo="{{ (paciente.sexo or 'Não informado') | e }}"
+             data-contato="{{ (paciente.contato or 'Não informado') | e }}"
+             data-documento="{{ (paciente.cpf or 'Não informado') | e }}"
+             data-atendimento="{{ (paciente.atendimento or 'Não informado') | e }}"
+             data-plano="{{ (paciente.plano or 'Não informado') | e }}"
+             {% set chegada = paciente.horario_chegada %}
+             data-chegada="{% if chegada %}
+                                {% if chegada.__class__.__name__ == 'datetime' %}
+                                    {{ chegada.strftime('%d/%m/%Y %H:%M') }}
+                                {% else %}
+                                    {{ chegada | e }}
+                                {% endif %}
+                            {% else %}
+                                Não informado
+                            {% endif %}"
+             data-observacoes_recepcao="{{ (paciente.observacoes_recepcao or 'Não informado') | e }}"
+             data-urgencia_recepcao="{{ (paciente.urgencia_recepcao or 'Não informado') | e }}"
+             data-responsavel_recepcao="{{ (paciente.responsavel_recepcao or 'Não informado') | e }}"
+             
+             {% if paciente.triagem %}
+                data-ocupacao="{{ (paciente.triagem.ocupacao or 'Não informado') | e }}"
+                data-temperatura="{{ (paciente.triagem.temperatura or 'Não informado') | e }}"
+                data-fc="{{ (paciente.triagem.freq_cardiaca or 'Não informado') | e }}"
+                data-fr="{{ (paciente.triagem.freq_respiratoria or 'Não informado') | e }}"
+                data-peso="{{ (paciente.triagem.peso or 'Não informado') | e }}"
+                data-altura="{{ (paciente.triagem.altura or 'Não informado') | e }}"
+                data-queixa="{{ (paciente.triagem.queixa_principal or 'Não informado') | e }}"
+                data-doencas="{{ (paciente.triagem.doencas_pre_existentes or 'Não informado') | e }}"
+                data-urgencia_triagem="{{ (paciente.triagem.urgencia_triagem or 'Não informado') | e }}"
+                data-finalizado_triagem="{{ 'Sim' if paciente.triagem.finalizado_triagem else 'Não' }}"
+                data-responsavel_triagem="{{ (paciente.triagem.responsavel_triagem or 'Não informado') | e }}"
+                data-observacoes_triagem="{{ (paciente.triagem.observacoes_triagem or 'Não informado') | e }}"
+                data-pressao_arterial="{{ (paciente.triagem.pressao_arterial or 'Não informado') | e }}"
+                data-alergia="{{ (paciente.triagem.alergia or 'Não informado') | e }}"
+                data-saturacao="{{ (paciente.triagem.saturacao or 'Não informado') | e }}"
+                data-tabagista="{{ 'Sim' if paciente.triagem.tabagista else 'Não' }}"
+                data-bebida_alcoolica="{{ 'Sim' if paciente.triagem.bebida_alcoolica else 'Não' }}"
+                data-cirugia="{{ (paciente.triagem.cirugia_realizada or 'Não informado') | e }}"
+                data-horario_triagem="{% if paciente.triagem.horario_de_triagem %}{{ paciente.triagem.horario_de_triagem.strftime('%d/%m/%Y %H:%M') }}{% else %}Não informado{% endif %}"
+                data-escala_dor="{{ (paciente.triagem.escala_de_dor or 'Não informado') | e }}"
+                data-toma_medicacao="{{ (paciente.triagem.toma_medicacao or 'Não informado') | e }}"
+             {% else %}
+                data-ocupacao="Não informado"
+                data-temperatura="Não informado"
+                data-fc="Não informado"
+                data-fr="Não informado"
+                data-peso="Não informado"
+                data-altura="Não informado"
+                data-queixa="Não informado"
+                data-doencas="Não informado"
+                data-urgencia_triagem="Não informado"
+                data-finalizado_triagem="Não informado"
+                data-responsavel_triagem="Não informado"
+                data-observacoes_triagem="Não informado"
+                data-pressao_arterial="Não informado"
+                data-alergia="Não informado"
+                data-saturacao="Não informado"
+                data-tabagista="Não informado"
+                data-bebida_alcoolica="Não informado"
+                data-cirugia="Não informado"
+                data-horario_triagem="Não informado"
+                data-escala_dor="Não informado"
+                data-toma_medicacao="Não informado"
+             {% endif %}
+
+             {% if paciente.medico %}
+                data-feedback="{{ (paciente.medico.feedback or 'Não informado') | e }}"
+                data-diagnostico="{{ (paciente.medico.diagnostico or 'Não informado') | e }}"
+                data-prescricao="{{ (paciente.medico.prescricao or 'Não informado') | e }}"
+                data-finalizado_medico="{{ 'Sim' if paciente.medico.finalizado_medico else 'Não' }}"
+                data-responsavel_medico="{{ (paciente.medico.responsavel_medico or 'Não informado') | e }}"
+                data-observacoes_medico="{{ (paciente.medico.observacoes_medico or 'Não informado') | e }}"
+                data-horario_finalizacao="{{ paciente.medico.horario_de_finalizacao.strftime('%d/%m/%Y %H:%M') if paciente.medico.horario_de_finalizacao else 'Não informado' }}"
+             {% else %}
+                data-feedback="Não informado"
+                data-diagnostico="Não informado"
+                data-prescricao="Não informado"
+                data-finalizado_medico="Não informado"
+                data-responsavel_medico="Não informado"
+                data-observacoes_medico="Não informado"
+                data-horario_finalizacao="Não informado"
+             {% endif %}
+
+        >
+            <h3>{{ paciente.nome_completo or 'Sem nome' }}</h3>
+            <p><strong>Data de Nascimento:</strong> {{ paciente.data_nascimento or 'Não informado' }}</p>
+            <p><strong>Diagnóstico:</strong> {{ paciente.medico.diagnostico if paciente.medico else 'Não informado' }}</p>
+        </div>
+
+    {% endfor %}
+
+</div>
+
+<!-- MODAL -->
+<div id="modalOverlay" class="modal-overlay" onclick="fecharModal()"></div>
+
+<div id="modalPaciente" class="modal-custom">
+
+    <div class="modal-header-custom">
+        <h3>Detalhes do Paciente</h3>
+        <button class="close-btn" onclick="fecharModal()">×</button>
+    </div>
+
+    <div class="modal-body-custom">
+
+        <h2 id="nomePaciente"></h2>
+
+        <h3>Informações Básicas</h3>
+        <p><strong>ID:</strong> <span id="idPaciente"></span></p>
+        <p><strong>Data de Nascimento:</strong> <span id="nascPaciente"></span></p>
+        <p><strong>Sexo:</strong> <span id="sexoPaciente"></span></p>
+        <p><strong>Contato:</strong> <span id="contatoPaciente"></span></p>
+        <p><strong>Documento:</strong> <span id="docPaciente"></span></p>
+
+        <h3>Recepção</h3>
+        <p><strong>Plano:</strong> <span id="planoPaciente"></span></p>
+        <p><strong>Atendimento:</strong> <span id="atendimentoPaciente"></span></p>
+        <p><strong>Chegada:</strong> <span id="chegadaPaciente"></span></p>
+        <p><strong>Observações:</strong> <span id="observacoes_recepcaoPaciente"></span></p>
+        <p><strong>Urgência:</strong> <span id="urgencia_recepcaoPaciente"></span></p>
+        <p><strong>Responsável:</strong> <span id="responsavel_recepcaoPaciente"></span></p>
+
+        <h3>Triagem</h3>
+        <p><strong>Ocupação:</strong> <span id="ocupacaoPaciente"></span></p>
+        <p><strong>Urgência:</strong> <span id="urgencia_triagemPaciente"></span></p>
+        <p><strong>Temperatura:</strong> <span id="tempPaciente"></span></p>
+        <p><strong>Frequência Cardíaca:</strong> <span id="fcPaciente"></span></p>
+        <p><strong>Frequência Respiratória:</strong> <span id="frPaciente"></span></p>
+        <p><strong>Peso:</strong> <span id="pesoPaciente"></span></p>
+        <p><strong>Altura:</strong> <span id="alturaPaciente"></span></p>
+        <p><strong>Pressão Arterial:</strong> <span id="pressao_arterialPaciente"></span></p>
+        <p><strong>Saturação:</strong> <span id="saturacaoPaciente"></span></p>
+        <p><strong>Alergia:</strong> <span id="alergiaPaciente"></span></p>
+        <p><strong>Queixa Principal:</strong> <span id="queixaPaciente"></span></p>
+        <p><strong>Doenças Pré-existentes:</strong> <span id="doencasPaciente"></span></p>
+        <p><strong>Tabagista:</strong> <span id="tabagistaPaciente"></span></p>
+        <p><strong>Bebida Alcoólica:</strong> <span id="bebida_alcoolicaPaciente"></span></p>
+        <p><strong>Cirurgia Realizada:</strong> <span id="cirugiaPaciente"></span></p>
+        <p><strong>Horário Triagem:</strong> <span id="horarioTriagemPaciente"></span></p>
+        <p><strong>Escala de Dor:</strong> <span id="escala_dorPaciente"></span></p>
+        <p><strong>Toma Medicação:</strong> <span id="toma_medicacaoPaciente"></span></p>
+        <p><strong>Finalizado Triagem:</strong> <span id="finalizado_triagemPaciente"></span></p>
+        <p><strong>Responsável Triagem:</strong> <span id="responsavel_triagemPaciente"></span></p>
+        <p><strong>Observações Triagem:</strong> <span id="observacoes_triagemPaciente"></span></p>
+
+        <h3>Médico</h3>
+        <p><strong>Diagnóstico:</strong> <span id="diagnosticoPaciente"></span></p>
+        <p><strong>Prescrição:</strong> <span id="prescricaoPaciente"></span></p>
+        <p><strong>Feedback:</strong> <span id="feedbackPaciente"></span></p>
+        <p><strong>Finalizado Médico:</strong> <span id="finalizado_medicoPaciente"></span></p>
+        <p><strong>Responsável Médico:</strong> <span id="responsavel_medicoPaciente"></span></p>
+        <p><strong>Observações Médico:</strong> <span id="observacoes_medicoPaciente"></span></p>
+        <p><strong>Horário de Finalização:</strong> <span id="horario_finalizacaoPaciente"></span></p>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/modal.js') }}"></script>
+
+{% endblock %}

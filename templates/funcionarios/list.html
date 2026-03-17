@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Funcionários{% endblock %}
+
+{% block content %}
+<h1>Funcionários</h1>
+
+<a class="btn-novo" href="{{ url_for('funcionario_novo') }}">Novo funcionário</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Usuário</th>
+            <th>Função</th>
+            <th>Sexo</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for f in dados %}
+        <tr>
+            <td>{{ f.id }}</td>
+            <td>{{ f.nome_completo }}</td>
+            <td>{{ f.usuario }}</td>
+            <td>{{ f.funcao }}</td>
+            <td>{{ f.sexo }}</td>
+
+            <td>
+                <a href="{{ url_for('funcionarios_editar', id=f.id) }}" class="btn-editar">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+
+                <form action="{{ url_for('funcionarios_excluir', id=f.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn-excluir">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

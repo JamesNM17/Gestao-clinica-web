@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Médico{% endblock %}
+
+{% block content %}
+
+<h1 class="titulo">Dashboard Médico</h1>
+
+<!-- =========================
+     RESUMO DO DIA
+============================ -->
+<div class="cards">
+    <div class="card">
+        <h3>Pacientes em Espera</h3>
+        <p>{{ pacientes_aguardando|length if pacientes_aguardando else 0 }}</p>
+    </div>
+    <div class="card">
+        <h3>Atendimentos Concluídos Hoje</h3>
+        <p>{{ atendimentos_hoje if atendimentos_hoje else 0 }}</p>
+    </div>
+    <div class="card">
+        <h3>Próximo Paciente</h3>
+        <p>
+            {% if pacientes_aguardando %}
+                {{ pacientes_aguardando[0].nome_completo }}
+            {% else %}
+                Nenhum paciente na fila
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<!-- =========================
+     FILA DE PACIENTES
+============================ -->
+<div class="card" style="margin-bottom: 20px;">
+    <h3>Fila de Pacientes</h3>
+
+    {% if pacientes_aguardando %}
+        <table class="tabela-triagem">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Data de Nascimento</th>
+                    <th>Urgência</th>
+                    <th>Queixa</th>
+                    <th>Ocupação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in pacientes_aguardando %}
+                    <tr>
+                        <td>{{ p.nome_completo }}</td>
+                        <td>{{ p.data_nascimento.strftime('%d/%m/%Y') }}</td>
+                        <td>{{ p.triagem.urgencia_triagem }}</td>
+                        <td>{{ p.triagem.queixa_principal }}</td>
+                        <td>{{ p.triagem.ocupacao }}</td>
+                        <td>
+                            <a class="btn-editar" href="{{ url_for('atender_paciente', paciente_id=p.id) }}">
+                                Atender
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align:center; color:#999;">Nenhum paciente aguardando atendimento.</p>
+    {% endif %}
+</div>
+
+<!-- =========================
+     ÚLTIMOS ATENDIMENTOS
+============================ -->
+<div class="card">
+    <h3>Últimos Atendimentos</h3>
+
+    {% if ultimos_atendimentos %}
+        <table class="tabela-triagem">
+            <thead>
+                <tr>
+                    <th>Paciente</th>
+                    <th>Diagnóstico</th>
+                    <th>Prescrição</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in ultimos_atendimentos %}
+                    <tr>
+                        <td>{{ a.recepcao.nome_completo }}</td>
+                        <td>{{ a.diagnostico or '-' }}</td>
+                        <td>{{ a.prescricao or '-' }}</td>
+                        <td>{{ a.horario_de_finalizacao.strftime('%d/%m/%Y %H:%M') if a.horario_de_finalizacao else '-' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align:center; color:#999;">Nenhum atendimento registrado recentemente.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

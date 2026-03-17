@@ -1,0 +1,70 @@
+{% block content %}
+
+{% set atual = pacientes[0] if pacientes and pacientes|length > 0 else None %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<div class="chamada-painel">
+
+    <!-- COLUNA ESQUERDA -->
+    <div class="chamada-coluna-esquerda">
+
+        <!-- PACIENTE -->
+        <div class="chamada-card">
+            <h3>PACIENTE</h3>
+            <div class="chamada-paciente">
+                {{ atual.nome_completo if atual else "—" }}
+            </div>
+        </div>
+
+        <!-- CONSULTÓRIO -->
+        <div class="chamada-card">
+            <h3>CONSULTÓRIO</h3>
+            <div class="chamada-consultorio">
+                {{ atual.destino if atual else "--" }}
+            </div>
+        </div>
+
+        <button class="chamada-btn" onclick="toggleTheme()">
+            Alternar Tema
+        </button>
+
+    </div>
+
+    <!-- COLUNA DIREITA -->
+    <div class="chamada-coluna-direita">
+
+        <h2>ÚLTIMAS CHAMADAS</h2>
+
+        {% if pacientes and pacientes|length > 0 %}
+            <ul class="chamada-lista">
+                {% for p in pacientes %}
+                    <li class="chamada-item">
+                        <strong>Consultório {{ p.destino }}</strong> —
+                        {{ p.nome_completo }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="chamada-vazio">
+                Nenhuma chamada registrada
+            </p>
+        {% endif %}
+
+        <div class="chamada-rodape">
+            Sistema de Chamadas
+        </div>
+
+    </div>
+
+</div>
+<script>
+    // tempo em milissegundos (ex: 5000 = 5s)
+    setInterval(() => {
+        window.location.reload();
+    }, 5000);
+</script>
+
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Triagem{% endblock %}
+
+{% block content %}
+
+<h1 class="titulo">Painel de Triagem</h1>
+
+<table class="tabela-triagem">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Paciente</th>
+            <th>Atendimento</th>
+            <th>Ocupação</th>
+            <th>Temp</th>
+            <th>Cardíaca</th>
+            <th>Resp.</th>
+            <th>Peso</th>
+            <th>Altura</th>
+            <th>Pressão</th>
+            <th>Saturação</th>
+            <th>Alergia</th>
+            <th>Urgência</th>
+            <th>Queixa</th>
+            <th>Triagem</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for paciente in pacientes %}
+        <tr>
+            <td>{{ paciente.id }}</td>
+            <td>{{ paciente.nome_completo }}</td>
+            <td>{{ paciente.atendimento or 'Não informado' }}</td>
+
+            {% if paciente.triagem %}
+                <td>{{ paciente.triagem.ocupacao or '-' }}</td>
+                <td>{{ paciente.triagem.temperatura or '-' }}°C</td>
+                <td>{{ paciente.triagem.freq_cardiaca or '-' }}</td>
+                <td>{{ paciente.triagem.freq_respiratoria or '-' }}</td>
+                <td>{{ paciente.triagem.peso or '-' }}</td>
+                <td>{{ paciente.triagem.altura or '-' }}</td>
+                <td>{{ paciente.triagem.pressao_arterial or '-' }}</td>
+                <td>{{ paciente.triagem.saturacao or '-' }}</td>
+                <td>{{ paciente.triagem.alergia or '-' }}</td>
+                <td>
+                    <span class="urgencia {{ paciente.triagem.urgencia_triagem|lower }}">
+                        {{ paciente.triagem.urgencia_triagem or '-' }}
+                    </span>
+                </td>
+                <td>{{ paciente.triagem.queixa_principal or '-' }}</td>
+                <td>{{ paciente.triagem.horario_de_triagem.strftime('%d/%m/%Y %H:%M') if paciente.triagem.horario_de_triagem else '-' }}</td>
+            {% else %}
+                <td colspan="12" style="text-align:center; color:#999;">Aguardando triagem</td>
+            {% endif %}
+
+            <td class="acoes-botoes">
+                {% if not paciente.triagem %}
+                    <a class="btn-editar" href="{{ url_for('triagem_novo', recepcao_id=paciente.id) }}">
+                        <i class="fa fa-edit"></i> Realizar Triagem
+                    </a>
+                {% else %}
+                    <a class="btn-editar" href="{{ url_for('triagem_editar', id=paciente.triagem.id) }}">
+                        <i class="fa fa-edit"></i> Editar
+                    </a>
+                    <form method="post" action="{{ url_for('triagem_excluir', id=paciente.triagem.id) }}"
+                          style="display:inline" onsubmit="return confirm('Excluir esta triagem?')">
+                        <button class="btn-excluir" type="submit">Excluir</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

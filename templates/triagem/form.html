@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} Triagem{% endblock %}
+
+{% block content %}
+
+<h1 class="titulo">{{ action }} Triagem</h1>
+
+<form method="POST" class="form-custom">
+    {{ form.hidden_tag() }}
+
+<div class="form-group">
+    <label>Paciente</label>
+    <select name="{{ form.recepcao_id.name }}" class="input-custom">
+        {% for id, nome in form.recepcao_id.choices %}
+            <option value="{{ id }}" {% if id == recepcao_id %}selected{% endif %}>
+                {{ nome }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+    <!-- Dados da triagem -->
+    <div class="form-group">{{ form.ocupacao.label }} {{ form.ocupacao(class="input-custom") }}</div>
+
+    <div class="linha-dupla">
+        <div class="form-group">{{ form.temperatura.label }} {{ form.temperatura(class="input-custom") }}</div>
+        <div class="form-group">{{ form.freq_cardiaca.label }} {{ form.freq_cardiaca(class="input-custom") }}</div>
+    </div>
+
+    <div class="linha-dupla">
+        <div class="form-group">{{ form.freq_respiratoria.label }} {{ form.freq_respiratoria(class="input-custom") }}</div>
+        <div class="form-group">{{ form.peso.label }} {{ form.peso(class="input-custom") }}</div>
+    </div>
+
+    <div class="linha-dupla">
+        <div class="form-group">{{ form.altura.label }} {{ form.altura(class="input-custom") }}</div>
+        <div class="form-group">{{ form.pressao_arterial.label }} {{ form.pressao_arterial(class="input-custom") }}</div>
+    </div>
+
+    <div class="linha-dupla">
+        <div class="form-group">{{ form.saturacao.label }} {{ form.saturacao(class="input-custom") }}</div>
+        <div class="form-group">{{ form.alergia.label }} {{ form.alergia(class="input-custom") }}</div>
+    </div>
+
+    <div class="form-group">{{ form.urgencia_triagem.label }} {{ form.urgencia_triagem(class="input-custom") }}</div>
+    <div class="form-group">{{ form.queixa_principal.label }} {{ form.queixa_principal(class="textarea-custom") }}</div>
+    <div class="form-group">{{ form.doencas_pre_existentes.label }} {{ form.doencas_pre_existentes(class="textarea-custom") }}</div>
+
+    <div class="checkbox-group">
+        {{ form.tabagista() }} <label>{{ form.tabagista.label }}</label>
+        {{ form.bebida_alcoolica() }} <label>{{ form.bebida_alcoolica.label }}</label>
+    </div>
+
+    <div class="form-group">{{ form.cirugia_realizada.label }} {{ form.cirugia_realizada(class="textarea-custom") }}</div>
+    <div class="linha-dupla">
+        <div class="form-group">{{ form.escala_de_dor.label }} {{ form.escala_de_dor(class="input-custom") }}</div>
+        <div class="form-group">{{ form.toma_medicacao.label }} {{ form.toma_medicacao(class="textarea-custom") }}</div>
+ </div>
+
+ <div class="form-group">{{ form.observacoes_triagem.label }} {{ form.observacoes_triagem(class="textarea-custom") }}</div>
+       <!-- Botão de submit -->
+<button type="submit" class="btn" style="margin-top: 15px;">
+    {{ action }}
+</button>
+</form>
+
+<!-- Botão chamar paciente -->
+{% if paciente %}
+<div class="form-group" style="text-align: right; margin-top: 10px;">
+    <form method="post"
+          action="{{ url_for('chamar_paciente',
+                             paciente_id=paciente.id,
+                             destino='triagem') }}">
+        {{ form.hidden_tag() }}
+        <button type="submit" class="btn btn-warning">
+            Chamar para Triagem
+        </button>
+    </form>
+</div>
+{% endif %}
+{% endblock %}

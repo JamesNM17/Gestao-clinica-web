@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} Recepção{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 650px; margin: auto;">
+    <h2 style="margin-top: 0; color: #3a2278;">{{ action }} - Recepção</h2>
+
+    <form method="post" class="form-custom">
+        {{ form.hidden_tag() }}
+
+        <!-- Nome completo -->
+        <div class="form-group">
+            {{ form.nome_completo.label }}
+            {{ form.nome_completo(class="input-custom") }}
+            {% for error in form.nome_completo.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <!-- Data de nascimento -->
+        <div class="form-group">
+            {{ form.data_nascimento.label }}
+            {{ form.data_nascimento(class="input-custom", type="date") }}
+            {% for error in form.data_nascimento.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <!-- Sexo -->
+        <div class="form-group">
+            {{ form.sexo.label }}
+            {{ form.sexo(class="input-custom") }}
+            {% for error in form.sexo.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <!-- Contato -->
+        <div class="form-group">
+            {{ form.contato.label }}
+            {{ form.contato(class="input-custom") }}
+            {% for error in form.contato.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <!-- CPF -->
+        <div class="form-group">
+            {{ form.cpf.label }}
+            {{ form.cpf(class="input-custom") }}
+            {% for error in form.cpf.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <!-- Atendimento -->
+        <div class="form-group">
+            {{ form.atendimento.label }}
+            {{ form.atendimento(class="input-custom") }}
+            {% for error in form.atendimento.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <!-- Plano -->
+        <div class="form-group">
+            {{ form.plano.label }}
+            {{ form.plano(class="input-custom") }}
+            {% for error in form.plano.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <!-- Observações -->
+        <div class="form-group">
+            {{ form.observacoes_recepcao.label }}
+            {{ form.observacoes_recepcao(class="input-custom") }}
+            {% for error in form.observacoes_recepcao.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <!-- Urgência -->
+        <div class="form-group">
+            {{ form.urgencia_recepcao.label }}
+            {{ form.urgencia_recepcao(class="input-custom") }}
+            {% for error in form.urgencia_recepcao.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <!-- Botão de submit -->
+        <button type="submit" class="btn" style="margin-top: 15px; width: 100%;">
+            {{ action }}
+        </button>
+    </form>
+</div>
+{% endblock %}

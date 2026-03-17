@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Recepção{% endblock %}
+
+{% block content %}
+<h1>Painel da Recepção</h1>
+
+<!-- Botão Novo Registro -->
+<a class="btn-novo" href="{{ url_for('recepcao_novo') }}">Novo Registro</a>
+
+<table class="tabela-recepcao">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Paciente</th>
+            <th>Nascimento</th>
+            <th>Sexo</th>
+            <th>Contato</th>
+            <th>CPF</th>
+            <th>Atendimento</th>
+            <th>Plano</th>
+            <th>Chegada</th>
+            <th>Observações</th>
+            <th>Urgência</th>
+            <th>Responsável</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in dados %}
+        <tr>
+            <td>{{ r.id }}</td>
+            <td>{{ r.nome_completo }}</td>
+            <td>{{ r.data_nascimento.strftime('%d/%m/%Y') if r.data_nascimento else '' }}</td>
+            <td>{{ r.sexo }}</td>
+            <td>{{ r.contato }}</td>
+            <td>{{ r.cpf }}</td>
+            <td>{{ r.atendimento }}</td>
+            <td>{{ r.plano }}</td>
+            <td>{{ r.horario_chegada.strftime('%d/%m/%Y %H:%M') if r.horario_chegada else '' }}</td>
+            <td>{{ r.observacoes_recepcao }}</td>
+            <td>{{ r.urgencia_recepcao }}</td>
+            <td>{{ r.responsavel_recepcao }}</td>
+            <td>
+                <!-- Botão Editar -->
+                <a class="btn-editar" href="{{ url_for('recepcao_editar', id=r.id) }}">
+                    <i class="fa fa-edit"></i> Editar
+                </a>
+
+                <!-- Botão Excluir -->
+                <form method="post" action="{{ url_for('recepcao_excluir', id=r.id) }}" style="display:inline" onsubmit="return confirm('Excluir registro?')">
+                    <button class="btn-excluir" type="submit">Excluir</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
