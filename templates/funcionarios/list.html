@@ -2,44 +2,59 @@
 {% block title %}Funcionários{% endblock %}
 
 {% block content %}
-<h1>Funcionários</h1>
 
-<a class="btn-novo" href="{{ url_for('funcionario_novo') }}">Novo funcionário</a>
+<div class="header-page">
+    <h1>Funcionários</h1>
+    <a class="btn-primary" href="{{ url_for('funcionario_novo') }}">
+        + Novo funcionário
+    </a>
+</div>
 
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Usuário</th>
-            <th>Função</th>
-            <th>Sexo</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
+<div class="card tabela-card">
 
-    <tbody>
-        {% for f in dados %}
-        <tr>
-            <td>{{ f.id }}</td>
-            <td>{{ f.nome_completo }}</td>
-            <td>{{ f.usuario }}</td>
-            <td>{{ f.funcao }}</td>
-            <td>{{ f.sexo }}</td>
+    <table class="tabela">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Usuário</th>
+                <th>Função</th>
+                <th>Sexo</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
 
-            <td>
-                <a href="{{ url_for('funcionarios_editar', id=f.id) }}" class="btn-editar">
-                    <i class="fas fa-edit"></i> Editar
-                </a>
+        <tbody>
+            {% for f in dados %}
+            <tr>
+                <td>#{{ f.id }}</td>
+                <td class="nome">{{ f.nome_completo }}</td>
+                <td>{{ f.usuario }}</td>
 
-                <form action="{{ url_for('funcionarios_excluir', id=f.id) }}" method="POST" style="display:inline;">
-                    <button type="submit" class="btn-excluir">
-                        <i class="fas fa-trash"></i> Excluir
-                    </button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                <td>
+                    <span class="badge-funcao {{ f.funcao }}">
+                        {{ f.funcao }}
+                    </span>
+                </td>
+
+                <td>{{ f.sexo or '-' }}</td>
+
+                <td class="acoes">
+                    <a href="{{ url_for('funcionarios_editar', id=f.id) }}" class="btn-icon editar">
+                        ✏️
+                    </a>
+
+                    <form action="{{ url_for('funcionarios_excluir', id=f.id) }}" method="POST">
+                        <button type="submit" class="btn-icon excluir">
+                            🗑️
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
 {% endblock %}

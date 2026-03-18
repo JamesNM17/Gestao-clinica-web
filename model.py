@@ -33,6 +33,11 @@ class Funcionarios(UserMixin, db1.Model):
     senha = db1.Column(db1.String(200), nullable=False)
     sexo = db1.Column(db1.String(15), nullable=True)
     email = db1.Column(db1.String(120), unique=True, nullable=False)
+    data_criacao = db1.Column(db1.DateTime, default=datetime.utcnow)
+    cpf = db1.Column(db1.String(14), unique=True, nullable=True)
+    telefone = db1.Column(db1.String(20), nullable=True)
+    data_nascimento = db1.Column(db1.Date, nullable=True)
+    ultimo_login = db1.Column(db1.DateTime, nullable=True)
 
 # -------------------------
 # Recepção

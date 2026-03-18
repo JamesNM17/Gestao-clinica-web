@@ -3,27 +3,50 @@
 
 {% block content %}
 
-<h1>Painel Administrativo</h1>
+<h1 class="titulo">Dashboard</h1>
 
-<div class="cards">
-    <div class="card" onclick="window.location.href='{{ url_for('funcionarios_list') }}'">
-        <h3>Funcionários</h3>
-        <p>Total: {{ dados|length }}</p>
+<div class="dashboard-grid">
+
+    <!-- Card principal -->
+    <div class="card destaque">
+        <h2>Bem-vindo</h2>
+        <p>{{ current_user.nome_completo }}</p>
+        <span class="badge">Administrador</span>
     </div>
 
-    <div class="card" onclick="window.location.href='{{ url_for('recepcao_list') }}'">
-        <h3>Recepção</h3>
-        <p>Pacientes em atendimento</p>
+    <!-- Cards pequenos -->
+    <div class="card small" onclick="window.location.href='{{ url_for('funcionarios_list') }}'">
+        <h3>👥 Funcionários</h3>
+        <p>{{ dados|length }}</p>
     </div>
 
-    <div class="card" onclick="window.location.href='{{ url_for('triagem') }}'">
-        <h3>Triagem</h3>
+    <div class="card small" onclick="window.location.href='{{ url_for('recepcao_list') }}'">
+        <h3>🧾 Recepção</h3>
+        <p>Pacientes ativos</p>
+    </div>
+
+    <div class="card small" onclick="window.location.href='{{ url_for('triagem') }}'">
+        <h3>🩺 Triagem</h3>
         <p>Registros recentes</p>
     </div>
-</div>
 
-<!-- GRÁFICO EXEMPLO -->
-<canvas id="grafico1" width="400" height="150"></canvas>
+    <!-- Gráfico -->
+    <div class="card grafico">
+        <h3>Visão geral</h3>
+        <canvas id="grafico1"></canvas>
+    </div>
+
+    <!-- Atividade -->
+    <div class="card atividade">
+        <h3>Atividade recente</h3>
+        <ul>
+            <li>✔ Novo funcionário cadastrado</li>
+            <li>✔ Paciente entrou na recepção</li>
+            <li>✔ Triagem finalizada</li>
+        </ul>
+    </div>
+
+</div>
 
 <script>
     const ctx = document.getElementById('grafico1');
@@ -38,8 +61,21 @@
                     {{ dados|length }},
                     5,
                     8
-                ]
+                ],
+                borderRadius: 8
             }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
     });
 </script>

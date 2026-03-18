@@ -32,9 +32,9 @@ def criar_usuario(usuario, senha, nome_completo, funcao, sexo, email):
 def criar_usuarios_padrao():
     usuarios = [
         (
-            "admin",
-            "admin123",
-            "Administrador do Sistema",
+            "admin1",
+            "admin1234",
+            "James",
             "Administrador",
             "Masculino",
             "admin@vitaslotus.com"

@@ -3,57 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Painel{% endblock %}</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
 
-<!-- Sidebar -->
-<div class="sidebar">
-    <h2>Cuidar E Conectar</h2>
+<div class="app">
 
-    {% set func = (current_user.funcao or "").strip().lower() %}
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h2 class="logo">Healthcare.</h2>
 
-    <!-- Administrador -->
-    {% if func == "administrador" %}
-        <a href="{{ url_for('admin_dashboard') }}">Dashboard Admin</a>
-        <a href="{{ url_for('funcionarios_list') }}">Funcionários</a>
-        <a href="{{ url_for('recepcao_list') }}">Dashboard Recepção</a>
-        <a href="{{ url_for('triagem') }}">Dashboard Triagem</a>
-        <a href="{{ url_for('dash_pacientes') }}">Pacientes</a>
-        <a href="{{ url_for('dashboard_medico') }}">Dashboard Médico</a>
-        <a href="{{ url_for('guia') }}">Orientações</a>
-        <a href="{{ url_for('painel_senha') }}">Painel de Chamada de Senha</a>
-    {% endif %}
+        {% set func = (current_user.funcao or "").strip().lower() %}
 
-    <!-- Recepcionista -->
-    {% if func == "recepcionista" %}
-        <a href="{{ url_for('recepcao_list') }}">Dashboard Recepção</a>
-        <a href="{{ url_for('dash_pacientes') }}">Pacientes</a>
-        <a href="{{ url_for('guia') }}">Orientações</a>
-    {% endif %}
+        <nav>
+            {% if func == "administrador" %}
+                <a href="{{ url_for('admin_dashboard') }}">📊 Dashboard</a>
+                <a href="{{ url_for('funcionarios_list') }}">👥 Funcionários</a>
+                <a href="{{ url_for('recepcao_list') }}">🧾 Recepção</a>
+                <a href="{{ url_for('triagem') }}">🩺 Triagem</a>
+                <a href="{{ url_for('dash_pacientes') }}">🧍 Pacientes</a>
+                <a href="{{ url_for('dashboard_medico') }}">👨‍⚕️ Médico</a>
+                <a href="{{ url_for('painel_senha') }}">📢 Chamadas</a>
+            {% endif %}
 
-    <!-- Enfermeiro -->
-    {% if func == "enfermeiro" %}
-        <a href="{{ url_for('triagem') }}">Dashboard Triagem</a>
-        <a href="{{ url_for('dash_pacientes') }}">Pacientes</a>
-        <a href="{{ url_for('guia') }}">Orientações</a>
-    {% endif %}
+            {% if func == "recepcionista" %}
+                <a href="{{ url_for('recepcao_list') }}">🧾 Recepção</a>
+                <a href="{{ url_for('dash_pacientes') }}">🧍 Pacientes</a>
+            {% endif %}
 
-    <!-- Médico -->
-    {% if func == "medico" %}
-        <a href="{{ url_for('dashboard_medico') }}">Dashboard Médico</a>
-        <a href="{{ url_for('dash_pacientes') }}">Pacientes</a>
-        <a href="{{ url_for('guia') }}">Orientações</a>
-    {% endif %}
+            {% if func == "enfermeiro" %}
+                <a href="{{ url_for('triagem') }}">🩺 Triagem</a>
+                <a href="{{ url_for('dash_pacientes') }}">🧍 Pacientes</a>
+            {% endif %}
 
-    <a href="{{ url_for('sair') }}">Sair</a>
-    <button class="btn" onclick="toggleTheme()">Alternar Tema</button>
+            {% if func == "medico" %}
+                <a href="{{ url_for('dashboard_medico') }}">👨‍⚕️ Médico</a>
+                <a href="{{ url_for('dash_pacientes') }}">🧍 Pacientes</a>
+            {% endif %}
+        </nav>
 
-    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+        <div class="sidebar-bottom">
+            <a href="{{ url_for('sair') }}">🚪 Sair</a>
+            <button onclick="toggleTheme()">🌙 Tema</button>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+
+        <!-- Topbar -->
+        <header class="topbar">
+            <input type="text" placeholder="🔍 Buscar..." class="search">
+
+            <div class="profile">
+                <span>{{ current_user.nome_completo }}</span>
+                <div class="avatar"></div>
+            </div>
+        </header>
+
+        <!-- Conteúdo -->
+        <section class="content">
+            {% block content %}{% endblock %}
+        </section>
+
+    </main>
+
 </div>
 
-<div class="content">
-    {% block content %}{% endblock %}
-</div>
-
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
 </html>
