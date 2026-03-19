@@ -13,6 +13,7 @@
 
             <div class="form-grid">
 
+                <!-- 🧑 DADOS PESSOAIS -->
                 <div class="form-group">
                     <label>Nome completo</label>
                     {{ form.nome_completo(class="input") }}
@@ -24,17 +25,44 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Email</label>
+                    {{ form.email(class="input") }}
+                </div>
+
+                <div class="form-group">
+                    <label>Telefone</label>
+                    {{ form.telefone(class="input") }}
+                </div>
+
+                <div class="form-group">
+                    <label>CPF</label>
+                    {{ form.cpf(class="input") }}
+                </div>
+
+                <div class="form-group">
+                    <label>Data de nascimento</label>
+                    {{ form.data_nascimento(class="input") }}
+                </div>
+
+                <div class="form-group">
+                    <label>Sexo</label>
+                    {{ form.sexo(class="input") }}
+                </div>
+
+                <!-- 💼 DADOS DE SISTEMA -->
+                <div class="form-group">
                     <label>Função</label>
                     {{ form.funcao(class="input") }}
                 </div>
 
+                <!-- 🔐 SENHA -->
                 <div class="form-group">
                     <label>Senha</label>
 
                     <div class="input-password">
                         {{ form.senha(class="input", id="senha") }}
 
-                        <span class="toggle-password" onclick="toggleSenha()">
+                        <span class="toggle-password" onclick="toggleSenha(this)">
 
                             <!-- Olho aberto -->
                             <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -51,9 +79,10 @@
                     </div>
                 </div>
 
+                <!-- 📸 FOTO -->
                 <div class="form-group">
-                    <label>Sexo</label>
-                    {{ form.sexo(class="input") }}
+                    <label>Foto (URL)</label>
+                    {{ form.foto(class="input") }}
                 </div>
 
             </div>
@@ -67,16 +96,15 @@
 </div>
 
 <script>
-function toggleSenha() {
+function toggleSenha(el) {
     const input = document.getElementById("senha");
-    const toggle = document.querySelector(".toggle-password");
 
     if (input.type === "password") {
         input.type = "text";
-        toggle.classList.add("active");
+        el.classList.add("active");
     } else {
         input.type = "password";
-        toggle.classList.remove("active");
+        el.classList.remove("active");
     }
 }
 </script>

@@ -14,18 +14,18 @@
 
     <!-- Sidebar -->
     <aside class="sidebar">
-        <h2 class="logo">Healthcare.</h2>
+        <h2 class="logo">Clinica</h2>
 
         {% set func = (current_user.funcao or "").strip().lower() %}
 
         <nav>
             {% if func == "administrador" %}
-                <a href="{{ url_for('admin_dashboard') }}">📊 Dashboard</a>
-                <a href="{{ url_for('funcionarios_list') }}">👥 Funcionários</a>
+                <a href="{{ url_for('admin_dashboard') }}">📊 Dashboard Admin</a>
+                <a href="{{ url_for('funcionarios_list') }}">👥 Funcionários LIsta</a>
                 <a href="{{ url_for('recepcao_list') }}">🧾 Recepção</a>
                 <a href="{{ url_for('triagem') }}">🩺 Triagem</a>
                 <a href="{{ url_for('dash_pacientes') }}">🧍 Pacientes</a>
-                <a href="{{ url_for('dashboard_medico') }}">👨‍⚕️ Médico</a>
+                <a href="{{ url_for('dashboard_medico') }}">👨‍⚕️ Dashboard Médico</a>
                 <a href="{{ url_for('painel_senha') }}">📢 Chamadas</a>
             {% endif %}
 
@@ -56,11 +56,28 @@
 
         <!-- Topbar -->
         <header class="topbar">
-            <input type="text" placeholder="🔍 Buscar..." class="search">
+            <div class="search-box">
+    <input 
+        type="text" 
+        id="buscaGlobal" 
+        placeholder="🔍 Buscar..." 
+        class="search"
+        autocomplete="off"
+    >
 
+    <div id="resultadoBusca" class="resultado-busca"></div>
+</div>
             <div class="profile">
                 <span>{{ current_user.nome_completo }}</span>
-                <div class="avatar"></div>
+                <div class="avatar">
+    {% if current_user.foto %}
+        <img src="{{ current_user.foto }}">
+    {% else %}
+        <span>
+            {{ current_user.nome_completo[:1] }}
+        </span>
+    {% endif %}
+</div>
             </div>
         </header>
 
@@ -74,5 +91,64 @@
 </div>
 
 <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+<script>
+const input = document.getElementById("buscaGlobal");
+const resultado = document.getElementById("resultadoBusca");
+
+// 🔥 MOSTRAR AO FOCAR
+input.addEventListener("focus", carregarSugestoes);
+
+// 🔎 BUSCA NORMAL
+input.addEventListener("keyup", carregarSugestoes);
+
+async function carregarSugestoes() {
+    const termo = input.value.trim();
+
+    const res = await fetch(`/busca-global?q=${termo}`);
+    const dados = await res.json();
+
+    resultado.innerHTML = "";
+
+    let tipos = {};
+
+    dados.forEach(item => {
+        if (!tipos[item.tipo]) {
+            tipos[item.tipo] = [];
+        }
+        tipos[item.tipo].push(item);
+    });
+
+    for (let tipo in tipos) {
+        const grupo = document.createElement("div");
+        grupo.classList.add("grupo");
+
+        grupo.innerHTML = `<div class="grupo-titulo">${tipo}</div>`;
+
+        tipos[tipo].forEach(item => {
+            const el = document.createElement("a");
+            el.href = item.url;
+            el.classList.add("item-busca");
+
+            el.innerHTML = `
+                <strong>${item.nome}</strong>
+                <span>${item.extra}</span>
+            `;
+
+            grupo.appendChild(el);
+        });
+
+        resultado.appendChild(grupo);
+    }
+}
+</script>
+<script>
+document.addEventListener("click", function(e) {
+    const box = document.querySelector(".search-box");
+
+    if (!box.contains(e.target)) {
+        document.getElementById("resultadoBusca").innerHTML = "";
+    }
+});
+</script>
 </body>
 </html>

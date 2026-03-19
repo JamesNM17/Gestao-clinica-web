@@ -1,105 +1,125 @@
 {% extends "base.html" %}
-
 {% block title %}Dashboard Médico{% endblock %}
 
 {% block content %}
 
-<h1 class="titulo">Dashboard Médico</h1>
+<div class="dashboard">
 
-<!-- =========================
-     RESUMO DO DIA
-============================ -->
-<div class="cards">
-    <div class="card">
-        <h3>Pacientes em Espera</h3>
-        <p>{{ pacientes_aguardando|length if pacientes_aguardando else 0 }}</p>
+    <!-- ESQUERDA -->
+    <div class="main">
+
+        <h1 class="titulo">Bem-vindo, Doutor {{current_user.nome_completo}} 👋</h1>
+
+        <div class="card hero">
+    <div class="hero-content">
+        <h2>Atendimento do Dia</h2>
+        <p>Gerencie seus pacientes de forma rápida e eficiente.</p>
+
+        <a href="{{ url_for('lista_medico') }}" class="btn-hero">
+    Ver fila
+</a>
     </div>
-    <div class="card">
-        <h3>Atendimentos Concluídos Hoje</h3>
-        <p>{{ atendimentos_hoje if atendimentos_hoje else 0 }}</p>
-    </div>
-    <div class="card">
-        <h3>Próximo Paciente</h3>
-        <p>
-            {% if pacientes_aguardando %}
-                {{ pacientes_aguardando[0].nome_completo }}
-            {% else %}
-                Nenhum paciente na fila
-            {% endif %}
-        </p>
-    </div>
+
+    <div class="hero-decoration"></div>
 </div>
 
-<!-- =========================
-     FILA DE PACIENTES
-============================ -->
-<div class="card" style="margin-bottom: 20px;">
-    <h3>Fila de Pacientes</h3>
+        <!-- CARDS RESUMO -->
+        <div class="cards">
 
-    {% if pacientes_aguardando %}
-        <table class="tabela-triagem">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Data de Nascimento</th>
-                    <th>Urgência</th>
-                    <th>Queixa</th>
-                    <th>Ocupação</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for p in pacientes_aguardando %}
+            <div class="card">
+    <h3>⏱ Tempo Médio</h3>
+    <p>{{ tempo_medio or '0 min' }}</p>
+</div>
+
+            <div class="card destaque">
+                <h3>Em Espera</h3>
+                <p>{{ pacientes_aguardando|length if pacientes_aguardando else 0 }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Atendidos Hoje</h3>
+                <p>{{ atendimentos_hoje if atendimentos_hoje else 0 }}</p>
+            </div>
+
+        </div>
+
+        <!-- FILA -->
+        <div class="card tabela-card">
+            <h3>Fila de Pacientes</h3>
+
+            {% if pacientes_aguardando %}
+            <table class="tabela">
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Urgência</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for p in pacientes_aguardando %}
                     <tr>
                         <td>{{ p.nome_completo }}</td>
-                        <td>{{ p.data_nascimento.strftime('%d/%m/%Y') }}</td>
-                        <td>{{ p.triagem.urgencia_triagem }}</td>
-                        <td>{{ p.triagem.queixa_principal }}</td>
-                        <td>{{ p.triagem.ocupacao }}</td>
+
                         <td>
-                            <a class="btn-editar" href="{{ url_for('atender_paciente', paciente_id=p.id) }}">
+                            <span class="badge-urgencia {{ p.triagem.urgencia_triagem|lower }}">
+                                {{ p.triagem.urgencia_triagem }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <a class="btn-primary btn-sm"
+                               href="{{ url_for('atender_paciente', paciente_id=p.id) }}">
                                 Atender
                             </a>
                         </td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p style="text-align:center; color:#999;">Nenhum paciente aguardando atendimento.</p>
-    {% endif %}
-</div>
+                    {% endfor %}
+                </tbody>
+            </table>
 
-<!-- =========================
-     ÚLTIMOS ATENDIMENTOS
-============================ -->
-<div class="card">
-    <h3>Últimos Atendimentos</h3>
+            {% else %}
+            <p class="empty">Nenhum paciente aguardando.</p>
+            {% endif %}
+        </div>
 
-    {% if ultimos_atendimentos %}
-        <table class="tabela-triagem">
-            <thead>
-                <tr>
-                    <th>Paciente</th>
-                    <th>Diagnóstico</th>
-                    <th>Prescrição</th>
-                    <th>Data</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for a in ultimos_atendimentos %}
-                    <tr>
-                        <td>{{ a.recepcao.nome_completo }}</td>
-                        <td>{{ a.diagnostico or '-' }}</td>
-                        <td>{{ a.prescricao or '-' }}</td>
-                        <td>{{ a.horario_de_finalizacao.strftime('%d/%m/%Y %H:%M') if a.horario_de_finalizacao else '-' }}</td>
-                    </tr>
+    </div>
+
+    <!-- DIREITA -->
+    <div class="side">
+
+        <!-- PRÓXIMO -->
+        <div class="card">
+            <h3>Próximo Paciente</h3>
+
+            {% if pacientes_aguardando %}
+                <p class="destaque-texto">
+                    {{ pacientes_aguardando[0].nome_completo }}
+                </p>
+            {% else %}
+                <p>Nenhum</p>
+            {% endif %}
+        </div>
+
+        <!-- ÚLTIMOS -->
+        <div class="card">
+            <h3>Últimos Atendimentos</h3>
+
+            {% if ultimos_atendimentos %}
+                {% for a in ultimos_atendimentos[:5] %}
+                    <div class="mini-item">
+                        <strong>{{ a.recepcao.nome_completo }}</strong>
+                        <span>{{ a.diagnostico or 'Sem diagnóstico' }}</span>
+                    </div>
                 {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p style="text-align:center; color:#999;">Nenhum atendimento registrado recentemente.</p>
-    {% endif %}
+            {% else %}
+                <p class="empty">Sem registros</p>
+            {% endif %}
+        </div>
+
+    </div>
+
 </div>
 
 {% endblock %}

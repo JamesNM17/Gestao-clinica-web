@@ -18,38 +18,75 @@
                 <th>ID</th>
                 <th>Nome</th>
                 <th>Usuário</th>
+                <th>Email</th>
                 <th>Função</th>
                 <th>Sexo</th>
+                <th>Status</th>
                 <th>Ações</th>
             </tr>
         </thead>
 
         <tbody>
             {% for f in dados %}
-            <tr>
+            <tr onclick="window.location='{{ url_for('funcionarios_editar', id=f.id) }}'">
+
                 <td>#{{ f.id }}</td>
-                <td class="nome">{{ f.nome_completo }}</td>
+
+                <td class="nome">
+                    {{ f.nome_completo }}
+                </td>
+
                 <td>{{ f.usuario }}</td>
 
+                <td>{{ f.email }}</td>
+
                 <td>
-                    <span class="badge-funcao {{ f.funcao }}">
+                    <span class="badge-funcao {{ f.funcao|lower|replace(' ', '-') }}">
                         {{ f.funcao }}
                     </span>
                 </td>
 
                 <td>{{ f.sexo or '-' }}</td>
 
-                <td class="acoes">
+                <!-- 🟢 Status online -->
+                <td>
+                    {% if f.online %}
+                        <span class="status online">Online</span>
+                    {% else %}
+                        <span class="status offline">Offline</span>
+                    {% endif %}
+                </td>
+
+                <!-- 🔧 Ações -->
+                <td class="acoes" onclick="event.stopPropagation()">
+
+                    <!-- Editar -->
                     <a href="{{ url_for('funcionarios_editar', id=f.id) }}" class="btn-icon editar">
-                        ✏️
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-width="2" d="M12 20h9"/>
+                            <path stroke-width="2" d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                        </svg>
                     </a>
 
-                    <form action="{{ url_for('funcionarios_excluir', id=f.id) }}" method="POST">
+                    <!-- Excluir -->
+                    <form action="{{ url_for('funcionarios_excluir', id=f.id) }}" 
+                          method="POST"
+                          onsubmit="return confirm('Tem certeza que deseja excluir este funcionário?')">
+
                         <button type="submit" class="btn-icon excluir">
-                            🗑️
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <polyline stroke-width="2" points="3 6 5 6 21 6"/>
+                                <path stroke-width="2" d="M19 6l-1 14H6L5 6"/>
+                                <path stroke-width="2" d="M10 11v6"/>
+                                <path stroke-width="2" d="M14 11v6"/>
+                                <path stroke-width="2" d="M9 6V4h6v2"/>
+                            </svg>
                         </button>
+
                     </form>
+
                 </td>
+
             </tr>
             {% endfor %}
         </tbody>

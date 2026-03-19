@@ -38,6 +38,10 @@ class Funcionarios(UserMixin, db1.Model):
     telefone = db1.Column(db1.String(20), nullable=True)
     data_nascimento = db1.Column(db1.Date, nullable=True)
     ultimo_login = db1.Column(db1.DateTime, nullable=True)
+    ultimo_logout = db1.Column(db1.DateTime)
+    online = db1.Column(db1.Boolean, default=False)
+    foto = db1.Column(db1.String(200))
+
 
 # -------------------------
 # Recepção

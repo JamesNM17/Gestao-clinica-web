@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Médico{% endblock %}
+
+{% block content %}
+
+<div class="header-page">
+    <h1>Dashboard Médico</h1>
+</div>
+
+<!-- =========================
+     CARDS RESUMO
+============================ -->
+<div class="cards">
+
+    <div class="card destaque">
+        <h3>🕐 Em Espera</h3>
+        <p>{{ pacientes_aguardando|length if pacientes_aguardando else 0 }}</p>
+    </div>
+
+    <div class="card">
+        <h3>✅ Atendidos Hoje</h3>
+        <p>{{ atendimentos_hoje if atendimentos_hoje else 0 }}</p>
+    </div>
+
+    <div class="card">
+        <h3>👤 Próximo Paciente</h3>
+        <p>
+            {% if pacientes_aguardando %}
+                {{ pacientes_aguardando[0].nome_completo }}
+            {% else %}
+                Nenhum na fila
+            {% endif %}
+        </p>
+    </div>
+
+</div>
+
+<!-- =========================
+     FILA DE ATENDIMENTO
+============================ -->
+<div class="card tabela-card">
+
+    <div class="header-card">
+        <h3>Fila de Atendimento</h3>
+    </div>
+
+    {% if pacientes_aguardando %}
+        <table class="tabela">
+            <thead>
+                <tr>
+                    <th>Paciente</th>
+                    <th>Idade</th>
+                    <th>Urgência</th>
+                    <th>Queixa</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for p in pacientes_aguardando %}
+                <tr>
+                    <td class="nome">{{ p.nome_completo }}</td>
+
+                    <td>
+                        {% if p.data_nascimento %}
+                            {{ ((now().date() - p.data_nascimento).days // 365) }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <span class="badge-urgencia {{ p.triagem.urgencia_triagem }}">
+                            {{ p.triagem.urgencia_triagem }}
+                        </span>
+                    </td>
+
+                    <td>{{ p.triagem.queixa_principal or '-' }}</td>
+
+                    <td>
+                        <a class="btn-primary btn-sm"
+                           href="{{ url_for('atender_paciente', paciente_id=p.id) }}">
+                            Atender
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    {% else %}
+        <p class="empty">Nenhum paciente aguardando atendimento.</p>
+    {% endif %}
+
+</div>
+
+<!-- =========================
+     ÚLTIMOS ATENDIMENTOS
+============================ -->
+<div class="card tabela-card">
+
+    <div class="header-card">
+        <h3>Últimos Atendimentos</h3>
+    </div>
+
+    {% if ultimos_atendimentos %}
+        <table class="tabela">
+            <thead>
+                <tr>
+                    <th>Paciente</th>
+                    <th>Diagnóstico</th>
+                    <th>Prescrição</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for a in ultimos_atendimentos %}
+                <tr>
+                    <td class="nome">{{ a.recepcao.nome_completo }}</td>
+                    <td>{{ a.diagnostico or '-' }}</td>
+                    <td>{{ a.prescricao or '-' }}</td>
+                    <td>
+                        {{ a.horario_de_finalizacao.strftime('%d/%m/%Y %H:%M') if a.horario_de_finalizacao else '-' }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    {% else %}
+        <p class="empty">Nenhum atendimento registrado recentemente.</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

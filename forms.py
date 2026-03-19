@@ -7,20 +7,68 @@ from wtforms.validators import InputRequired, Optional, Length, NumberRange, Reg
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, FloatField, TextAreaField, SelectField, BooleanField, SubmitField, DateField, PasswordField
 from wtforms.validators import InputRequired, Optional, Length, NumberRange, Regexp
+from wtforms.validators import Email
 
 # -------------------------
 # Formulário de Funcionários
 # -------------------------
 class FuncionarioForm(FlaskForm):
-    nome_completo = StringField('Nome completo', validators=[InputRequired(), Length(max=100)])
-    usuario = StringField('Usuário', validators=[InputRequired(), Length(max=70)])
+
+    # 🧑 Dados pessoais
+    nome_completo = StringField(
+        'Nome completo',
+        validators=[InputRequired(), Length(max=100)]
+    )
+
+    usuario = StringField(
+        'Usuário',
+        validators=[InputRequired(), Length(max=70)]
+    )
+
+    email = StringField(
+        'Email',
+        validators=[InputRequired(), Email()]
+    )
+
+    telefone = StringField('Telefone')
+
+    cpf = StringField('CPF')
+
+    data_nascimento = DateField(
+        'Data de nascimento',
+        format='%Y-%m-%d',
+        validators=[Optional()]
+    )
+
+    sexo = SelectField(
+        'Sexo',
+        choices=[
+            ('Masculino','Masculino'),
+            ('Feminino','Feminino'),
+            ('Outro','Outro')
+        ],
+        validators=[Optional()]
+    )
+
+    # 💼 Sistema
     funcao = SelectField(
-        'Função', 
-        choices=[('Administrador','Administrador'), ('Recepcionista','Recepcionista'), ('Médico','Médico'), ('Enfermeiro','Enfermeiro')], 
+        'Função',
+        choices=[
+            ('Administrador','Administrador'),
+            ('Recepcionista','Recepcionista'),
+            ('Médico','Médico'),
+            ('Enfermeiro','Enfermeiro')
+        ],
         validators=[InputRequired()]
     )
-    senha = PasswordField('Senha', validators=[InputRequired(), Length(min=6, max=200)])
-    sexo = SelectField('Sexo', choices=[('Masculino','Masculino'), ('Feminino','Feminino'), ('Outro','Outro')], validators=[Optional()])
+
+    senha = PasswordField(
+        'Senha',
+        validators=[Optional(), Length(min=6, max=200)]
+    )
+
+    foto = StringField('Foto')
+
     submit = SubmitField('Salvar')
 
 # -------------------------

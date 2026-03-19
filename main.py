@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, abort, flash, request
+from flask import Flask, render_template, redirect, url_for, abort, flash, request, jsonify
 from dados1 import db1
 from model import (
     Funcionarios, Recepcao, Triagem, Medico,
@@ -184,6 +184,148 @@ def atender_paciente(paciente_id):
 # -----------------------
 # PAINEL DE CHAMADA DE SENHA
 # -----------------------
+
+@app.route('/busca-global')
+def busca_global():
+    termo = request.args.get('q', '').strip().lower()
+    func = (current_user.funcao or "").lower()
+
+    resultados = []
+
+    # =========================
+    # 🔥 SEM PESQUISA → SUGESTÕES
+    # =========================
+    if not termo:
+
+        # 📄 páginas disponíveis
+        paginas = [
+            {"nome": "Dashboard Admin", "url": "admin_dashboard", "roles": ["administrador"]},
+            {"nome": "Funcionários", "url": "funcionarios_list", "roles": ["administrador"]},
+            {"nome": "Recepção", "url": "recepcao_list", "roles": ["administrador","recepcionista"]},
+            {"nome": "Triagem", "url": "triagem", "roles": ["administrador","enfermeiro"]},
+            {"nome": "Pacientes", "url": "dash_pacientes", "roles": ["administrador","recepcionista","enfermeiro","medico"]},
+            {"nome": "Dashboard Médico", "url": "dashboard_medico", "roles": ["administrador","medico"]},
+        ]
+
+        for p in paginas:
+            if func in p["roles"]:
+                resultados.append({
+                    "tipo": "Sugestão",
+                    "nome": p["nome"],
+                    "extra": "Acesso rápido",
+                    "url": url_for(p["url"])
+                })
+
+        # 👥 últimos pacientes
+        pacientes = Recepcao.query.order_by(
+            Recepcao.horario_chegada.desc()
+        ).limit(5).all()
+
+        for p in pacientes:
+            resultados.append({
+                "tipo": "Recentes",
+                "nome": p.nome_completo,
+                "extra": "Paciente recente",
+                "url": url_for('recepcao_list')
+            })
+
+        # 👨‍⚕️ últimos atendimentos
+        atendimentos = Medico.query.join(Recepcao).order_by(
+            Medico.horario_de_finalizacao.desc()
+        ).limit(5).all()
+
+        for a in atendimentos:
+            resultados.append({
+                "tipo": "Recentes",
+                "nome": a.recepcao.nome_completo,
+                "extra": "Atendimento recente",
+                "url": url_for('dashboard_medico')
+            })
+
+        return jsonify(resultados)
+
+    # =========================
+    # 🔎 BUSCA NORMAL (SEU CÓDIGO)
+    # =========================
+
+    # 📄 páginas
+    paginas = [
+        {"nome": "Dashboard Admin", "url": "admin_dashboard", "roles": ["administrador"]},
+        {"nome": "Funcionários", "url": "funcionarios_list", "roles": ["administrador"]},
+        {"nome": "Recepção", "url": "recepcao_list", "roles": ["administrador","recepcionista"]},
+        {"nome": "Triagem", "url": "triagem", "roles": ["administrador","enfermeiro"]},
+        {"nome": "Pacientes", "url": "dash_pacientes", "roles": ["administrador","recepcionista","enfermeiro","medico"]},
+        {"nome": "Dashboard Médico", "url": "dashboard_medico", "roles": ["administrador","medico"]},
+    ]
+
+    for p in paginas:
+        if func in p["roles"] and termo in p["nome"].lower():
+            resultados.append({
+                "tipo": "Página",
+                "nome": p["nome"],
+                "extra": "Acesso rápido",
+                "url": url_for(p["url"])
+            })
+
+    # 👥 funcionários
+    if func == "administrador":
+        funcionarios = Funcionarios.query.filter(
+            Funcionarios.nome_completo.ilike(f"%{termo}%")
+        ).limit(5).all()
+
+        for f in funcionarios:
+            resultados.append({
+                "tipo": "Funcionário",
+                "nome": f.nome_completo,
+                "extra": f.funcao,
+                "url": url_for('funcionarios_list')
+            })
+
+    # 🧍 pacientes
+    if func in ["administrador","recepcionista","enfermeiro","medico"]:
+        pacientes = Recepcao.query.filter(
+            Recepcao.nome_completo.ilike(f"%{termo}%")
+        ).limit(5).all()
+
+        for p in pacientes:
+            resultados.append({
+                "tipo": "Paciente",
+                "nome": p.nome_completo,
+                "extra": p.destino or "Recepção",
+                "url": url_for('dash_pacientes')
+            })
+
+    # 🩺 triagem
+    triagens = Triagem.query.filter(
+        Triagem.queixa_principal.ilike(f"%{termo}%")
+    ).limit(5).all()
+
+    for t in triagens:
+        resultados.append({
+            "tipo": "Triagem",
+            "nome": t.recepcao.nome_completo,
+            "extra": t.queixa_principal[:40] if t.queixa_principal else "",
+            "url": url_for('triagem')
+        })
+
+    # 👨‍⚕️ atendimentos
+    atendimentos = Medico.query.join(Recepcao).filter(
+        Medico.diagnostico.ilike(f"%{termo}%")
+    ).limit(5).all()
+
+    for a in atendimentos:
+        resultados.append({
+            "tipo": "Atendimento",
+            "nome": a.recepcao.nome_completo,
+            "extra": a.diagnostico[:40] if a.diagnostico else "",
+            "url": url_for('dashboard_medico')
+        })
+
+    return jsonify(resultados)
+
+@app.route('/medico/lista')
+def lista_medico():
+    return render_template('medico/list.html')
 @app.route("/painel_senha")
 @login_required
 def painel_senha():
